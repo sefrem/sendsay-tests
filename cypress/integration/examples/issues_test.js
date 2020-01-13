@@ -34,15 +34,45 @@ describe("Issues testing", () => {
             //При клике на меню выбора аудитории должны открыться опции выбора, в которых можно выбрать получателей
             cy.contains('Аудитория').click()
             cy.contains('Получатели рассылки').should('be.visible')
+            //При попытке сохранения без заполнения обязательных полей должна появиться ошибка
             cy.contains('Сохранить').click()
             cy.get('.field-layout__error')
               .should('be.visible')
               .and('contain', 'Необходимо заполнить поле')
+            //При клике на меню-dropdown должен появиться пункт "Доступные для рассылки"
             cy.get('form').within(() => {
                 cy.get('.Button-icon').click()
             })
             cy.get('button[title="Доступные для рассылки email"]').click()
             cy.contains('Сохранить').click()
+        })
+
+        it("selects the sender of the issue", () => {
+            //При клике на меню выбора отправителя должна появиться форма ввода данных отправителя.
+            cy.contains('Отправитель').click()
+            cy.contains('Имя отправителя').should('be.visible')
+            //При попытке сохранения без заполнения обязательных полей должна появиться ошибка
+            cy.contains('Сохранить').click()
+            cy.get('.field-layout__error')
+              .should('be.visible')
+              .and('contain', 'Необходимо заполнить поле')
+            // Отображаемые в поле "имя" данные должны соответствовать введенным.
+            cy.get('form textarea:first').type('test_name').should('have.value', 'test_name')
+            cy.contains('Выберите email').click()
+            //При клике по опции выбора email отправителя должен открыться dropdown, где можно выбрать свой email.
+            cy.get('.Dropdown-content').contains(username).click()
+            // Отображаемые в поле "тема" данные должны соответствовать введенным.
+            cy.get('textarea[name=subject]').type('test_subject').should('have.value', 'test_subject')
+            cy.contains('Сохранить').click()
+        })
+
+        it("selects the template of the issue", () => {
+            //При клике на меню создания письма должна произойти переадресация в галерею шаблонов (url='../gallery')
+            cy.contains('Создать письмо').click()
+            cy.url().should('contain', '/gallery')
+            //При клике по любому шаблону должна появиться кнопка "Сохранить и закрыть", клик на которую вернет нас в меню создания рассылки.
+            cy.get('.GalleryCard:first').click()
+            cy.contains('Сохранить и закрыть').click()
         })
 
     })
