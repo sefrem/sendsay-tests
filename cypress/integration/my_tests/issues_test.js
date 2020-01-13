@@ -24,9 +24,9 @@ describe("Issues testing", () => {
         it("creates a new email issue", () => {
             //При клике на "Создать рассылку" должно всплыть и быть видимым окно с опциямми, которое содержит
             // пункт "Email", при клике на который происходит переадресация на страницу создания новой Email-рассылки
-            cy.get('.action-button__main').click()
+            cy.get('button[class="action-button__main"]').click({force: true})
             cy.get('.dialog__content').should('be.visible')
-            cy.contains('Email').click()
+            cy.contains('Email').click({force: true})
             cy.url().should('contain', '/draft')
         })
 
@@ -44,7 +44,9 @@ describe("Issues testing", () => {
                 cy.get('.Button-icon').click()
             })
             cy.get('button[title="Доступные для рассылки email"]').click()
+            cy.wait(2000)
             cy.contains('Сохранить').click()
+            cy.wait(2000)
         })
 
         it("selects the sender of the issue", () => {
@@ -73,6 +75,19 @@ describe("Issues testing", () => {
             //При клике по любому шаблону должна появиться кнопка "Сохранить и закрыть", клик на которую вернет нас в меню создания рассылки.
             cy.get('.GalleryCard:first').click()
             cy.contains('Сохранить и закрыть').click()
+        })
+
+        it("sends out the issue", () => {
+            //После заполнения предыдущих полей должна стать активной форма отправки
+            cy.get('.Wizard .Wizard-step:last').within(() => {
+                cy.get('button').within(() => {
+                    cy.contains('Отправить').click()
+                })
+            })
+            //После нажатия кнопки отправки должно всплыть окно с подтверждением отправки
+            cy.get('.dialog__action-button').click()
+            //После подтвердждения отправки должно появиться уведомление о том, что выпуск поставлен в очередь отправки
+            cy.contains('Выпуск поставлен в очередь отправки').should('be.visible')
         })
 
     })

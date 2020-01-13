@@ -3,6 +3,15 @@ describe("Login test", () => {
     const username = 'fireweb2112@gmail.com';
     const password = 'thi7Musam';
 
+    context('Handling an unauthorized access', () => { 
+      //Происходит ли переадресация на страницу логина при попытке зайти на /dashboard, не залогиневшись
+      it('redirectts to /signin if trying to access /dashboard unauthorised', () => {
+          cy.clearCookies() 
+          cy.visit('https://app.sendsay.ru/dashboard')
+          cy.url().should('include', '/signin')
+      })
+  })
+
     context('Login form submission', () => {
         beforeEach(() => {
             cy.visit('https://app.sendsay.ru/signin')
@@ -45,13 +54,5 @@ describe("Login test", () => {
 
     });
 
-    context('Handling an unauthorized access', () => { 
-        //Происходит ли переадресация на страницу логина при попытке зайти на /dashboard, не залогиневшись
-        it('redirectts to /signin if trying to access /dashboard unauthorised', () => {
-            cy.clearCookies() 
-            cy.visit('https://app.sendsay.ru/dashboard')
-            cy.url().should('include', '/signin')
-        })
-    })
   })
   
