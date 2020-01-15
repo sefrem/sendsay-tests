@@ -23,3 +23,19 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import 'cypress-wait-until';
+
+Cypress.Commands.add('getWizardStep', (number) => cy.get(".Wizard-step")
+.eq(number))
+
+Cypress.Commands.add('login', (username, password) => {
+    cy.request(
+        "POST",
+        `https://api.sendsay.ru/general/api/v100/json/${username}/`,
+        {
+            action: "login",
+            login: username,
+            passwd: password,
+        }
+    )
+})
